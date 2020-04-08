@@ -5,7 +5,6 @@ import argparse
 
 
 def add_users(token, team_name, users, are_moderators=False):
-    print(are_moderators)
     # Init webexteamssdk
     api = WebexTeamsAPI(access_token=token)
 
@@ -31,6 +30,9 @@ def add_users(token, team_name, users, are_moderators=False):
         exit(f"The team '{team_name}' was not found in the Teams for the given token.")
 
     # Add users to Team
+    if are_moderators:
+        print("> The '-m' flag was provided. ALL users will be added as moderators.")
+
     for email in members_to_add:
         api.team_memberships.create(
             target_team.id, personEmail=email, isModerator=are_moderators
