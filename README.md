@@ -36,6 +36,7 @@ optional arguments:
   -t TEAM, --team TEAM  The Team Name users should be added to.
   -f FILE, --file FILE  File that contains one user email per line.
   -m, --moderator       Add the users as moderators.  ```
+```
 
-  # License
-  Licensed under the [MIT License](https://choosealicense.com/licenses/mit/).
+# License
+Licensed under the [MIT License](https://choosealicense.com/licenses/mit/).
