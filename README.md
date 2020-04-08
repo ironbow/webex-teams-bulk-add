@@ -1,5 +1,7 @@
 # Overview
-This is a simple script to add users in bulk to a WebEx Teams Team
+This is a simple script to add users in bulk to a WebEx Teams Team. 
+
+__Note__ that this is for a ***Team*** not an individual ***Space***.
 
 # Install
 Clone (or download):  
