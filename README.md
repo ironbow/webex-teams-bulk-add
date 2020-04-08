@@ -23,19 +23,19 @@ If you want to add the users as moderators, add `-m`:
 If you need your personal token, please [visit the WebEx Teams Developer docs](https://developer.webex.com/docs/api/getting-started) while logged in to copy your Personal Access Token.
 # Usage
 ```
-usage: bulk-add.py [-h] [-i IDENTITY_TOKEN] [-t TEAM] [-f FILE] [-m]
+usage: bulk-add.py [-h] -i IDENTITY_TOKEN -t TEAM -f FILE [-m]
 
 Add bulk users to WebEx Teams Team.
 
 optional arguments:
   -h, --help            show this help message and exit
   -i IDENTITY_TOKEN, --identity_token IDENTITY_TOKEN
-                        The token (or other valid token) to connect to the WebEx Teams API. This should be a moderator in the target Team. 
+                        The token (or other valid token) to connect to the WebEx Teams API. 
+                        This should be a moderator in the target Team. 
                         Your personal token can be found here: https://developer.webex.com/docs/api/getting-started
   -t TEAM, --team TEAM  The Team Name users should be added to.
   -f FILE, --file FILE  File that contains one user email per line.
-  -m, --moderator       Should the added members be moderators.
-  ```
+  -m, --moderator       Add the users as moderators.  ```
 
   # License
   Licensed under the [MIT License](https://choosealicense.com/licenses/mit/).
