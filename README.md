@@ -35,7 +35,7 @@ optional arguments:
                         Your personal token can be found here: https://developer.webex.com/docs/api/getting-started
   -t TEAM, --team TEAM  The Team Name users should be added to.
   -f FILE, --file FILE  File that contains one user email per line.
-  -m, --moderator       Add the users as moderators.  ```
+  -m, --moderator       Add the users as moderators.
 ```
 
 # License
