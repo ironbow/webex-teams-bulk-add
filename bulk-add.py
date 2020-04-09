@@ -34,10 +34,18 @@ def add_users(token, team_name, users, are_moderators=False):
         print("> The '-m' flag was provided. ALL users will be added as moderators.")
 
     for email in members_to_add:
-        api.team_memberships.create(
-            target_team.id, personEmail=email, isModerator=are_moderators
-        )
-        print(f"> Added {email} to Team!")
+        # Depending on how many users you're adding, the API may rate limit the script. 
+        # The Teams SDK will handle that automatically, but you may see the script pause.
+        try:
+            api.team_memberships.create(
+                target_team.id, personEmail=email, isModerator=are_moderators
+            )
+            print(f"> Added {email} to Team!")
+        except exceptions.ApiError as e:
+            if e.response.status_code == 409:
+                print(f"> {email} was already a member of the team. Skipping..")
+            else:
+                print(e)
 
 
 if __name__ == "__main__":
