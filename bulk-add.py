@@ -4,7 +4,7 @@ from webexteamssdk import exceptions
 import argparse
 
 
-def add_users(token, team_name, users, are_moderators=False):
+def add_users(token, team_name, users, add_to_all_rooms=False, are_moderators=False):
     # Init webexteamssdk
     api = WebexTeamsAPI(access_token=token)
 
@@ -33,9 +33,15 @@ def add_users(token, team_name, users, are_moderators=False):
     if are_moderators:
         print("> The '-m' flag was provided. ALL users will be added as moderators.")
 
+    # Try to get all the rooms in the Team
+    if add_to_all_rooms:
+        rooms = api.rooms.list(teamId=target_team.id)
+
     for email in members_to_add:
         # Depending on how many users you're adding, the API may rate limit the script. 
         # The Teams SDK will handle that automatically, but you may see the script pause.
+
+        # Add user to Team
         try:
             api.team_memberships.create(
                 target_team.id, personEmail=email, isModerator=are_moderators
@@ -46,6 +52,22 @@ def add_users(token, team_name, users, are_moderators=False):
                 print(f"> {email} was already a member of the team. Skipping..")
             else:
                 print(e)
+        
+        # Add user to rooms, if chosen
+        for room in rooms:
+            if room.isLocked:
+                # "Locked" rooms are the default room joined when added to the space, 
+                # so let's skip it to reduce unnecessary errors.
+                continue
+            try:
+                api.memberships.create(room.id, personEmail=email, isModerator=are_moderators)
+            except exceptions.ApiError as e:
+                if e.response.status_code == 409:
+                    print(f"> {email} was already a member of room {room.title}. Skipping..")
+                else:
+                    print(e)
+            print(f"> Adding {email} to room {room.title}..")
+
 
 
 if __name__ == "__main__":
@@ -75,6 +97,13 @@ if __name__ == "__main__":
         help="File that contains one user email per line.",
     )
     parser.add_argument(
+        "-a",
+        "--all-rooms",
+        help="Add the users to all the existing Team rooms.",
+        default=False,
+        action="store_true",
+    )
+    parser.add_argument(
         "-m",
         "--moderator",
         help="Add the users as moderators.",
@@ -89,4 +118,4 @@ if __name__ == "__main__":
     except FileNotFoundError:
         exit(f"The file '{args.file}' does not exist. Please double check the path.")
 
-    add_users(args.identity_token, args.team, members_to_add, args.moderator)
+    add_users(args.identity_token, args.team, members_to_add, args.all_rooms, args.moderator)
