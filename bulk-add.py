@@ -12,7 +12,10 @@ def add_users(token, team_name, users, add_to_all_rooms=False, are_moderators=Fa
         me = api.people.me()
         print(f"> Connected to API as {me.displayName}")
     except exceptions.ApiError as e:
-        exit(e)
+        if e.status_code == 401: 
+            exit("Identity token unauthorized, please get a new Identity token from: https://developer.webex.com/docs/api/getting-started")
+        else:
+            exit(e)
 
     # Load list of users to add
     print(f"> Loaded {len(users)} total users to add..")
@@ -56,8 +59,9 @@ def add_users(token, team_name, users, add_to_all_rooms=False, are_moderators=Fa
         # Add user to rooms, if chosen
         for room in rooms:
             if room.isLocked:
-                # "Locked" rooms are the default room joined when added to the space, 
-                # so let's skip it to reduce unnecessary errors.
+                # "Locked" rooms are any rooms that are "moderated" 
+                # such as the default Team room. Let's skip them 
+                # to reduce unnecessary errors.
                 continue
             try:
                 api.memberships.create(room.id, personEmail=email, isModerator=are_moderators)
