@@ -13,6 +13,7 @@ def add_users(
     included_rooms=None,
     add_to_all_rooms=False,
     are_moderators=False,
+    preconfirm=False,
 ):
     # Init webexteamssdk
     api = WebexTeamsAPI(access_token=token)
@@ -75,9 +76,10 @@ def add_users(
     )
 
     # Confirm with user that things look right before continuing
-    if not input("Are you sure you want to continue? (y/N) ").lower() == "y":
-        print("Aborting..")
-        sys.exit(0)
+    if not preconfirm:
+        if not input("Are you sure you want to continue? (y/N) ").lower() == "y":
+            print("Aborting..")
+            sys.exit(0)
 
     for email in members_to_add:
         # Depending on how many users you're adding, the API may rate limit the script.
@@ -162,6 +164,13 @@ if __name__ == "__main__":
         default=False,
         action="store_true",
     )
+    parser.add_argument(
+        "-c",
+        "--confirm",
+        help="Proactively confirm script changes. This bypasses the confirmation prompt.",
+        default=False,
+        action="store_true",
+    )
     args = parser.parse_args()
 
     try:
@@ -181,4 +190,5 @@ if __name__ == "__main__":
         args.rooms,
         args.all_rooms,
         args.moderator,
+        args.confirm,
     )
